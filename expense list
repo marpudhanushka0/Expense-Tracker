@@ -1,0 +1,25 @@
+import React from 'react';
+
+function ExpenseList({ expenses, deleteExpense }) {
+  const entries = Object.entries(expenses);
+
+  if (entries.length === 0) return <p>No expenses recorded.</p>;
+
+  return (
+    <ul style={{ listStyle: 'none', padding: 0 }}>
+      {entries.map(([id, exp]) => (
+        <li key={id} style={{ marginBottom: 8 }}>
+          <strong>{exp.description}</strong> - ${exp.amount.toFixed(2)} [{exp.category}] ({exp.type})
+          <button
+            onClick={() => deleteExpense(id)}
+            style={{ marginLeft: 10, color: 'red' }}
+          >
+            Delete
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export default ExpenseList;
