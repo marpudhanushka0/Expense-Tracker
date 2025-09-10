@@ -1,0 +1,57 @@
+import React, { useState } from 'react';
+
+const categories = ['Food', 'Transport', 'Salary', 'Entertainment', 'Other'];
+
+function ExpenseForm({ addExpense }) {
+  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState('');
+  const [category, setCategory] = useState(categories[0]);
+  const [type, setType] = useState('expense');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!description || !amount) return;
+    addExpense({
+      description,
+      amount: parseFloat(amount),
+      category,
+      type,
+      date: new Date().toISOString(),
+    });
+    setDescription('');
+    setAmount('');
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
+      <input
+        type="text"
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        required
+        style={{ marginRight: 10 }}
+      />
+      <input
+        type="number"
+        placeholder="Amount"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        required
+        style={{ marginRight: 10, width: 100 }}
+      />
+      <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ marginRight: 10 }}>
+        {categories.map((cat) => (
+          <option key={cat}>{cat}</option>
+        ))}
+      </select>
+      <select value={type} onChange={(e) => setType(e.target.value)} style={{ marginRight: 10 }}>
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+  );
+}
+
+export default ExpenseForm;
