@@ -1,0 +1,62 @@
+import React, { useEffect, useRef } from 'react';
+import Chart from 'chart.js/auto';
+
+function ChartComponent({ expenses }) {
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
+
+  useEffect(() => {
+    const ctx = chartRef.current.getContext('2d');
+
+    // Prepare data: sum amounts by category
+    const categorySums = {};
+    Object.values(expenses).forEach(({ category, amount, type }) => {
+      const sign = type === 'income' ? 1 : -1;
+      categorySums[category] = (categorySums[category] || 0) + amount * sign;
+    });
+
+    const labels = Object.keys(categorySums);
+    const data = Object.values(categorySums).map((val) => Math.abs(val));
+
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+    }
+
+    chartInstance.current = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Expenses by Category',
+            data,
+            backgroundColor: [
+              '#FF6384',
+              '#36A2EB',
+              '#FFCE56',
+              '#4BC0C0',
+              '#9966FF',
+            ],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+      },
+    });
+
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, [expenses]);
+
+  return (
+    <div style={{ maxWidth: 400, marginTop: 30 }}>
+      <canvas ref={chartRef}></canvas>
+    </div>
+  );
+}
+
+export default ChartComponent;
